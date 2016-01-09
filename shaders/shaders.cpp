@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 
 // GLEW
 #define GLEW_STATIC
@@ -25,11 +26,11 @@ const GLchar* vertexShaderSource = "#version 430 core\n"
     "}\0";
 
 const GLchar* fragmentShaderSource = "#version 330 core\n"
-    "in vec4 vertexColor;\n"
     "out vec4 color;\n"
+    "uniform vec4 ourColor;\n"
     "void main()\n"
     "{\n"
-    "color = vertexColor;\n"
+    "color = ourColor;\n"
     "}\n\0";
 
 // The MAIN function, from here we start the application and run the game loop
@@ -157,6 +158,12 @@ int main()
 
         // Draw our first triangle
         glUseProgram(shaderProgram);
+
+        GLfloat timeValue = glfwGetTime();
+        GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+        GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3); // The last number indicates the number of vertices we're drawing. For 2 triangles, is 6
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
