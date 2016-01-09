@@ -1,0 +1,24 @@
+# CMake entry point
+cmake_minimum_required (VERSION 2.6)
+project (creating_a_window)
+
+#set(CMAKE_MODULE_PATH /usr/local/lib/cmake)
+set(CMAKE_PREFIX_PATH /usr/local/lib/cmake/glfw)
+
+find_package(PkgConfig REQUIRED)
+find_package(OpenGL REQUIRED)
+
+find_package(GLEW REQUIRED)
+#find_package(GLM REQUIRED)
+#find_package(glfw3 REQUIRED)
+
+#########################################################
+# Include Files
+#########################################################
+add_executable(window window.cpp)
+
+pkg_search_module(GLFW REQUIRED glfw3)
+include_directories(${GLFW_INCLUDE_DIRS})
+link_directories(${GLFW_LIBRARY_DIRS})
+
+target_link_libraries(window ${GLFW_STATIC_LIBRARY} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES} Xxf86vm pthread Xrandr Xinerama Xi Xcursor)
