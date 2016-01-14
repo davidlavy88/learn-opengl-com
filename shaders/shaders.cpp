@@ -17,20 +17,21 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 
 // Shaders
 const GLchar* vertexShaderSource = "#version 430 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "out vec4 vertexColor;"
+    "layout (location = 0) in vec3 position; // The position variable has attribute position 0 \n"
+    "layout (location = 1) in vec3 color;    // The color variable has attribute position 1 \n"
+    "out vec3 ourColor; // Output a color to the fragment shader \n"
     "void main()\n"
     "{\n"
     "gl_Position = vec4(position, 1.0);\n"
-    "vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f);\n"
+    "ourColor = color; // Set ourColor to the input color we got from the vertex data \n"
     "}\0";
 
 const GLchar* fragmentShaderSource = "#version 330 core\n"
+    "in vec3 ourColor;\n"
     "out vec4 color;\n"
-    "uniform vec4 ourColor;\n"
     "void main()\n"
     "{\n"
-    "color = ourColor;\n"
+    "color = vec4(ourColor, 1.0f);\n"
     "}\n\0";
 
 // The MAIN function, from here we start the application and run the game loop
@@ -105,22 +106,11 @@ int main()
     glDeleteShader(fragmentShader);
 
     GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        // Positions         // Colors
+        -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // Bottom Right
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // Bottom Left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f  // Top
     };
-
-    /*GLfloat vertices[] = {
-         0.5f,  0.5f, 0.0f,  // Top Right
-         0.5f, -0.5f, 0.0f,  // Bottom Right
-        -0.5f, -0.5f, 0.0f,  // Bottom Left
-        -0.5f,  0.5f, 0.0f   // Top Left
-    };
-    GLuint indices[] = {  // Note that we start from 0!
-        0, 1, 3,  // First Triangle
-        1, 2, 3   // Second Triangle
-    };*/
-
 
     GLuint VBO, VAO;
     GLuint EBO;
@@ -136,8 +126,10 @@ int main()
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
     // glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
@@ -158,11 +150,6 @@ int main()
 
         // Draw our first triangle
         glUseProgram(shaderProgram);
-
-        GLfloat timeValue = glfwGetTime();
-        GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-        GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3); // The last number indicates the number of vertices we're drawing. For 2 triangles, is 6
