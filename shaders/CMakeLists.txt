@@ -39,9 +39,10 @@ add_definitions(${GLM_DEFINITIONS})
 # Include Files
 #########################################################
 add_executable(shaders shaders.cpp)
-#add_executable(exercise_hellotriangle exercise_helloTriangle.cpp)
+add_executable(shaders2 shader.h shader.cpp)
 
 target_link_libraries(shaders ${GLFW_STATIC_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLM_LIBRARIES})
+target_link_libraries(shaders2 ${GLFW_STATIC_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLM_LIBRARIES})
 #target_link_libraries(exercise_hellotriangle ${GLFW_STATIC_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLM_LIBRARIES})
 
 #target_compile_features(hellowindow PRIVATE cxx_range_for)
